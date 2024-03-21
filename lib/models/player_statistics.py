@@ -1,3 +1,5 @@
+# lib/models/player_statistics.py
+
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Date, Time
 from sqlalchemy.orm import sessionmaker, relationship
 from models.__init__ import Base, engine
@@ -15,3 +17,5 @@ class PlayerStatistics(Base):
     blocks = Column(Integer)
     player = relationship("Players", back_populates="statistics")
     game = relationship("Games", back_populates="player_statistics")
+
+    __table_arg__ = (UniqueConstraint('player_id', 'game_id', name='unique_player_game_stats'),)
