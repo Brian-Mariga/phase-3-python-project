@@ -1,4 +1,4 @@
-from helpers import exit_program
+from helpers import *
 
 def main():
     while True:
@@ -7,19 +7,19 @@ def main():
         if choice == "0":
             exit_program()
         elif choice == "1":
-            pass
+            add_a_player()
         elif choice == "2":
-            pass
+            list_of_players()
         elif choice == "3":
-            pass
+            get_player_by_player_id()
         elif choice == "4":
-            pass
+            get_a_player_by_player_first_name()
         elif choice == "5":
-            pass
+            list_of_players_of_a_team()
         elif choice == "6":
-            pass
+            update_player_details()
         elif choice == "7":
-            pass
+            delete_a_player()
         elif choice == "8":
             pass
         elif choice == "9":
@@ -39,13 +39,13 @@ def main():
 def menu():
     print("Please select an option:")
     print("0. Exit Program!!!")
-    print("1. ")
-    print("2. ")
-    print("3. ")
-    print("4: ")
-    print("5: ")
-    print("6: ")
-    print("7. ")
+    print("1. Add a Player")
+    print("2. List all Players")
+    print("3. Get Player by ID")
+    print("4: Get player by First Name")
+    print("5: List of Players in a Team")
+    print("6: Update Player details")
+    print("7. Delete a Player")
     print("8. ")
     print("9. ")
     print("10: ")

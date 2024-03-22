@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Da
 from sqlalchemy.orm import sessionmaker, relationship
 from models.__init__ import Base, engine
 
-class Games(Base):
+class Game(Base):
 
     __tablename__ = 'games'
 
@@ -15,3 +15,6 @@ class Games(Base):
     time = Column(Time, nullable = False)
     location = Column(String, nullable =False)
 
+    __table_args__ = (
+        UniqueConstraint('date', 'time', 'location', name='unique_game_details'),
+    )

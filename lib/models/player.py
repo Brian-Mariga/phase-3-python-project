@@ -11,10 +11,14 @@ class Player(Base):
     player_id = Column(Integer, primary_key=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    jersey_number = Column(Integer, nullable=False, unique=True)
+    jersey_number = Column(Integer, nullable=False)
     contact_details = Column(String, nullable=False, unique=True)
     team_id = Column(Integer, ForeignKey('teams.team_id'))
-    team = relationship("Teams", back_populates="players")
+    team = relationship("Team", back_populates="players")
+
+    __table_args__ = (
+        UniqueConstraint('first_name', 'last_name', name='unique_player_name'),
+    )
 
     def add_player(first_name, last_name, jersey_number, contact_details, team_id):
         if not first_name or not last_name or not jersey_number or not contact_details or not team_id:
@@ -36,27 +40,20 @@ class Player(Base):
                 print(f'Error: {exc}')
 
     def get_all_players():
-        players = session.query(Player).all()
+        return session.query(Player).all()
 
-        for player in players:
-            print(player)
-    
     def get_player_by_id(player_id):
         return session.query(Player).filter(Player.player_id == player_id).first()
+
     
     def get_player_by_first_name(first_name):
-        players = session.query(Player).filter(Player.first_name == first_name).all()
-        
-        for player in players:
-            print(player)
+        return session.query(Player).filter(Player.first_name == first_name).all()
     
     def get_players_of_a_team(team_id):
-        players =session.query(Player).filter(Player.team_id == team_id).all()
+        return session.query(Player).filter(Player.team_id == team_id).all()
 
-        for player in players:
-            print(player)
     
-    def update_player_details():
+    def update_player():
         player_id = input("Enter the player's id: ")
 
         if player := Player.get_player_by_id(player_id):
@@ -101,5 +98,5 @@ class Player(Base):
                 session.rollback()
                 print(f'Error deleting player: {exc}')
 
-            else:
-                print(f'Player {player_id} not found')
+        else:
+            print(f'Player {player_id} not found')

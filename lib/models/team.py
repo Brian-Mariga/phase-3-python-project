@@ -49,11 +49,38 @@ class Team(Base):
         else:
             print(f'Team of team name {team_name} not found.')
 
-    def get_players_of_a_team(team_id):
-        pass
+    def update_team():
+        team_id = input('Enter the team id: ')
 
-    def update_team(team_id):
-        pass
+        if team:= Team.get_team_by_id(team_id):
+            try:
+                new_team_name = input("Enter the new team's name(leave empty to keep current): ")
 
-    def delete_team(team_id):
-        pass
+                if new_team_name:
+                    team.team_name = new_team_name
+
+                session.commit()
+                print("Team details updated successfully:\n",{team})
+
+            except Exception as exc:
+                session.rollback()
+                print(f'Error updating team details: {exc}')
+
+        else:
+            print(f'Team with id {team_id} not found')
+
+    def delete_team():
+        team_id = input("Enter the team's id: ")
+
+        if team := Team.get_team_by_id(team_id):
+            try:
+                session.delete(team)
+                session.commit()
+                print("Successfully deleted player:\n",{team})
+
+            except Exception as exc:
+                session.rollback()
+                print(f'Error deleting team: {exc}')
+
+        else:
+            print(f'Team with id {team_id} not found')

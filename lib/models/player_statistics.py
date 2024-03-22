@@ -15,7 +15,22 @@ class PlayerStatistics(Base):
     assists = Column(Integer)
     steals = Column(Integer)
     blocks = Column(Integer)
-    player = relationship("Players", back_populates="statistics")
-    game = relationship("Games", back_populates="player_statistics")
+    player = relationship("Player", back_populates="statistics")
+    game = relationship("Game", back_populates="player_statistics")
 
     __table_arg__ = (UniqueConstraint('player_id', 'game_id', name='unique_player_game_stats'),)
+
+    def add_statistics():
+        pass
+
+    def get_player_statistics():
+        pass
+
+    def get_game_statistics():
+        pass
+
+    def update_statistic():
+        pass
+
+    def delete_statistic():
+        pass
