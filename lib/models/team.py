@@ -30,17 +30,10 @@ class Team(Base):
                 print(f'Error adding team: {exc}')
 
     def get_all_teams():
-        if teams := session.query(Team).all():
-            for team in teams:
-                print(team)
-        else:
-            print('No teams found')
+        return session.query(Team).all()
 
     def get_team_by_id(team_id):
-        if team :=session.query(Team).filter(Team.team_id == team_id).first():
-            print(team)
-        else:
-            print(f'Team of id {team_id} not found.')
+        return session.query(Team).filter(Team.team_id == team_id).first()
         
 
     def get_team_by_name(team_name):
