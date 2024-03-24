@@ -15,10 +15,14 @@ class Player(Base):
     contact_details = Column(String, nullable=False, unique=True)
     team_id = Column(Integer, ForeignKey('teams.team_id'))
     team = relationship("Team", back_populates="players")
+    statistics = relationship("Statistics", back_populates="player")
 
     __table_args__ = (
         UniqueConstraint('first_name', 'last_name', name='unique_player_name'),
     )
+
+    def __repr__(self):
+        return f"<Player(id={self.player_id}, name={self.first_name} {self.last_name}, jersey={self.jersey_number})>"
 
     def add_player(first_name, last_name, jersey_number, contact_details, team_id):
         if not first_name or not last_name or not jersey_number or not contact_details or not team_id:
@@ -53,9 +57,7 @@ class Player(Base):
         return session.query(Player).filter(Player.team_id == team_id).all()
 
     
-    def update_player():
-        player_id = input("Enter the player's id: ")
-
+    def update_player(player_id):
         if player := Player.get_player_by_id(player_id):
             try:
                 new_first_name = input("Enter the player's new first name (leave empty to keep current): ")
@@ -85,9 +87,7 @@ class Player(Base):
         else:
             print(f'Player with id {player_id} not found')
 
-    def delete_player():
-        player_id = input("Enter the player's id: ")
-
+    def delete_player(player_id):
         if player := Player.get_player_by_id(player_id):
             try:
                 session.delete(player)

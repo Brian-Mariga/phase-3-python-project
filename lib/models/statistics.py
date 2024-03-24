@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Da
 from sqlalchemy.orm import sessionmaker, relationship
 from models.__init__ import Base, session
 
-class PlayerStatistics(Base):
+class Statistics(Base):
     __tablename__ = 'player_statistics'
 
     stat_id = Column(Integer, primary_key=True)
@@ -16,7 +16,7 @@ class PlayerStatistics(Base):
     steals = Column(Integer)
     blocks = Column(Integer)
     player = relationship("Player", back_populates="statistics")
-    game = relationship("Game", back_populates="player_statistics")
+    game = relationship("Game", back_populates="statistics")
 
     __table_arg__ = (UniqueConstraint('player_id', 'game_id', name='unique_player_game_stats'),)
 
@@ -24,7 +24,7 @@ class PlayerStatistics(Base):
         if not player_id or not game_id:
             print("Player ID and Game id are required: ")
         else:
-            new_statistic = PlayerStatistics(player_id = player_id,game_id = game_id,points_scored = points_scored,rebounds = rebounds,assists = assists,steals = steals,blocks = blocks)
+            new_statistic = Statistics(player_id = player_id,game_id = game_id,points_scored = points_scored,rebounds = rebounds,assists = assists,steals = steals,blocks = blocks)
 
             try:
                 session.add(new_statistic)
@@ -35,16 +35,16 @@ class PlayerStatistics(Base):
                 print(f'Error: {exc}')
 
     def get_all_statistics():
-        return session.query(PlayerStatistics).all()
+        return session.query(Statistics).all()
     
     def get_statistic_by_id(stat_id):
-        return session.query(PlayerStatistics).filter(PlayerStatistics.stat_id == stat_id).first()
+        return session.query(Statistics).filter(Statistics.stat_id == stat_id).first()
     
     def get_player_statistics(player_id):
-        return session.query(PlayerStatistics).filter(PlayerStatistics.player_id == player_id).all()
+        return session.query(Statistics).filter(Statistics.player_id == player_id).all()
 
     def get_game_statistics(game_id):
-        return session.query(PlayerStatistics).filter(PlayerStatistics.game_id == game_id).all()
+        return session.query(Statistics).filter(Statistics.game_id == game_id).all()
     
     @classmethod
     def get_stat_with_highest(cls, attribute):
@@ -52,7 +52,8 @@ class PlayerStatistics(Base):
 
         if attribute not in valid_attributes:
             raise ValueError("Invalid attribute. Please provide one of: 'points_scored', 'rebounds', 'assists', 'steals', 'blocks'")
-        return session.query(cls).order_by(getattr(cls,attribute).desc()).first()
+        else:
+            return session.query(cls).order_by(getattr(cls,attribute).desc()).first()
 
     @classmethod
     def get_stat_with_lowest(cls, attribute):
@@ -63,7 +64,7 @@ class PlayerStatistics(Base):
         return session.query(cls).order_by(getattr(cls,attribute).asc()).first()
         
     def update_statistic(stat_id):
-        if stat := PlayerStatistics.get_statistic_by_id(stat_id):
+        if stat := Statistics.get_statistic_by_id(stat_id):
             try:
                 new_player_id = input("Enter the new Player ID: ")
                 new_game_id = input("Enter the new Game ID: ")
@@ -96,13 +97,13 @@ class PlayerStatistics(Base):
                 print(f"Error updating statistic's details: {exc}")
 
     def delete_statistic(stat_id):
-        if stat := PlayerStatistics.get_statistic_by_id(stat_id):
+        if stat := Statistics.get_statistic_by_id(stat_id):
             try:
                 session.delete(stat)
                 session.commit()
                 print("Statistic successfully deleted:\n",{stat})
             except Exception as exc:
                 session.rollback()
-                print("Error deleting statistic")
+                print(f"Error deleting statistic: {exc}")
         else:
             print(f"Stats if ID {stat_id} not found")

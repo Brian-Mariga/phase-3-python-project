@@ -11,6 +11,8 @@ class Team(Base):
     team_id = Column(Integer, primary_key=True)
     team_name = Column(String, nullable = False, unique= True)
 
+    players = relationship("Player", back_populates="team")
+
     __table_args__ = (UniqueConstraint('team_name', name='unique_team_name'),)
 
     def add_team(team_name):
@@ -29,6 +31,14 @@ class Team(Base):
                 session.rollback()
                 print(f'Error adding team: {exc}')
 
+    @classmethod
+    def get_team_name_by_id(cls, team_id):
+        team = cls.get_team_by_id(team_id)
+        if team:
+            return team.team_name
+        else:
+            return "Unknown"
+
     def get_all_teams():
         return session.query(Team).all()
 
@@ -42,9 +52,7 @@ class Team(Base):
         else:
             print(f'Team of team name {team_name} not found.')
 
-    def update_team():
-        team_id = input('Enter the team id: ')
-
+    def update_team(team_id):
         if team:= Team.get_team_by_id(team_id):
             try:
                 new_team_name = input("Enter the new team's name(leave empty to keep current): ")
@@ -62,9 +70,7 @@ class Team(Base):
         else:
             print(f'Team with id {team_id} not found')
 
-    def delete_team():
-        team_id = input("Enter the team's id: ")
-
+    def delete_team(team_id):
         if team := Team.get_team_by_id(team_id):
             try:
                 session.delete(team)

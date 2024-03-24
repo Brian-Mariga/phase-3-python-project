@@ -14,14 +14,16 @@ class Game(Base):
     date = Column(Date, nullable = False)
     time = Column(Time, nullable = False)
     location = Column(String, nullable =False)
+    statistics = relationship("Statistics", back_populates="game")
 
     __table_args__ = (
         UniqueConstraint('date', 'time', 'location', name='unique_game_details'),
     )
 
     def create_game(home, away, date, time, location):
-        if not home or not away or not date or not time or not location:
-            print('Home, Away, Date, Time and Location are required')
+        if not all([home, away, date, time, location]):
+            print("All fields are required!")
+            return
         else:
             try:
                 new_game = Game(home=home, away= away, date=date, time=time,location= location)
