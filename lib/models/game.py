@@ -1,32 +1,34 @@
 # lib/models/game.py
 
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Date, Time
+from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
-from models.__init__ import Base, engine,session
+from models.__init__ import Base, session
 
 class Game(Base):
-
     __tablename__ = 'games'
 
-    game_id = Column(Integer, primary_key = True)
-    home = Column(String, nullable = False)
-    away = Column(String, nullable = False)
-    date = Column(Date, nullable = False)
-    time = Column(Time, nullable = False)
-    location = Column(String, nullable =False)
+    game_id = Column(Integer, primary_key=True)
+    home_team_id = Column(Integer, ForeignKey('teams.team_id'), nullable=False)
+    away_team_id = Column(Integer, ForeignKey('teams.team_id'), nullable=False)
+    date = Column(Date, nullable=False)
+    time = Column(Time, nullable=False)
+    location = Column(String, nullable=False)
     statistics = relationship("Statistics", back_populates="game")
+    home_team = relationship("Team", foreign_keys=[home_team_id])
+    away_team = relationship("Team", foreign_keys=[away_team_id])
 
     __table_args__ = (
         UniqueConstraint('date', 'time', 'location', name='unique_game_details'),
     )
 
-    def create_game(home, away, date, time, location):
+    @classmethod
+    def create_game(cls, home, away, date, time, location):
         if not all([home, away, date, time, location]):
             print("All fields are required!")
             return
         else:
             try:
-                new_game = Game(home=home, away= away, date=date, time=time,location= location)
+                new_game = cls(home=home, away=away, date=date, time=time, location=location)
                 session.add(new_game)
                 session.commit()
                 print('Game added successfully')
@@ -34,22 +36,27 @@ class Game(Base):
                 session.rollback()
                 print(f'Error: {exc}')
 
-    def get_all_games():
-        return session.query(Game).all()
+    @classmethod
+    def get_all_games(cls):
+        return session.query(cls).all()
     
-    def get_game_by_id(game_id):
-        return session.query(Game).filter(Game.game_id == game_id).first()
+    @classmethod
+    def get_game_by_id(cls, game_id):
+        return session.query(cls).filter(cls.game_id == game_id).first()
     
-    def get_games_by_date(date):
-        return session.query(Game).filter(Game.date == date).all()
+    @classmethod
+    def get_games_by_date(cls, date):
+        return session.query(cls).filter(cls.date == date).all()
     
-    def get_games_by_team(team_name):
-        return session.query(Game).filter((Game.home == team_name) | (Game.away == team_name)).all()
+    @classmethod
+    def get_games_by_team(cls, team_name):
+        return session.query(cls).filter((cls.home == team_name) | (cls.away == team_name)).all()
     
-    def update_game():
+    @classmethod
+    def update_game(cls):
         game_id = input("Enter the game's id: ")
 
-        if game := Game.get_game_by_id(game_id):
+        if game := cls.get_game_by_id(game_id):
             try:
                 new_home = input("Enter the new home team (leave empty to keep current): ")
                 new_away = input("Enter the new away team (leave empty to keep current): ")
@@ -78,10 +85,11 @@ class Game(Base):
         else:
             print(f'Game with id {game_id} not found')
 
-    def delete_game():
+    @classmethod
+    def delete_game(cls):
         game_id = input("Enter the game's ID: ")
 
-        if game := Game.get_game_by_id(game_id):
+        if game := cls.get_game_by_id(game_id):
             try:
                 session.delete(game)
                 session.commit()

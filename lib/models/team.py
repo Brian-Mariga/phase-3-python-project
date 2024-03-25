@@ -75,7 +75,7 @@ class Team(Base):
             try:
                 session.delete(team)
                 session.commit()
-                print("Successfully deleted player:\n",{team})
+                print("Successfully deleted team:\n",{team})
 
             except Exception as exc:
                 session.rollback()

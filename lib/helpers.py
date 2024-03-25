@@ -1,14 +1,28 @@
 # lib/helpers.py
 
+import logging
+import sqlalchemy as sa
 from models.player import Player
 from models.team import Team
 from models.game import Game
 from models.statistics import Statistics
 from models.__init__ import session
-import logging
 import sys
 
-logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
+class InfoFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno != logging.INFO
+
+# Create a logger and set its level to WARNING
+logger = logging.getLogger()
+logger.setLevel(logging.WARNING)
+
+# Add the custom filter to the logger
+logger.addFilter(InfoFilter())
+
+# Disable SQLAlchemy logging
+sa_log = logging.getLogger('sqlalchemy.engine')
+sa_log.setLevel(logging.WARNING)
 
 def exit_program():
     print("Goodbye!")
@@ -103,8 +117,8 @@ def delete_a_team():
 
 
 def create_a_new_game():
-    home = input("Enter the Home Team: ")
-    away = input("Enter the Away Team: ")
+    home = input("Enter the Home Team ID: ")
+    away = input("Enter the Away Team ID: ")
     date = input("Enter the Date of the game in the format 'YYYY-MM-DD': ")
     time = input("Enter the Game's time in the format 'HH:MM': ")
     location = input("Enter the location of the Game: ")
