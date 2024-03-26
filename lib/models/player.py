@@ -1,8 +1,12 @@
 # lib/models/player.py
 
+import logging
 from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Date, Time
 from sqlalchemy.orm import relationship
 from models.__init__ import Base, session
+
+
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 class Player(Base):
 
@@ -21,8 +25,8 @@ class Player(Base):
         UniqueConstraint('first_name', 'last_name', name='unique_player_name'),
     )
 
-    def __repr__(self):
-        return f"<Player(id={self.player_id}, name={self.first_name} {self.last_name}, jersey={self.jersey_number})>"
+    # def __repr__(self):
+    #     return f"<Player(id={self.player_id}, name={self.first_name} {self.last_name}, jersey={self.jersey_number})>"
 
     def add_player(first_name, last_name, jersey_number, contact_details, team_id):
         if not first_name or not last_name or not jersey_number or not contact_details or not team_id:
@@ -78,7 +82,8 @@ class Player(Base):
                     player.team_id = new_team_id
 
                 session.commit()
-                print("Player details updated successfully:\n", {player})
+                print("Player details updated successfully:")
+                print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}")
 
             except Exception as exc:
                 session.rollback()
@@ -92,7 +97,8 @@ class Player(Base):
             try:
                 session.delete(player)
                 session.commit()
-                print("Successfully deleted player:\n",{player})
+                print("Successfully deleted player:")
+                print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}")
 
             except Exception as exc:
                 session.rollback()

@@ -47,10 +47,7 @@ class Team(Base):
         
 
     def get_team_by_name(team_name):
-        if team := session.query(Team).filter(Team.team_name == team_name).first():
-            print(team)
-        else:
-            print(f'Team of team name {team_name} not found.')
+        return session.query(Team).filter(Team.team_name == team_name).first()
 
     def update_team(team_id):
         if team:= Team.get_team_by_id(team_id):
@@ -61,7 +58,8 @@ class Team(Base):
                     team.team_name = new_team_name
 
                 session.commit()
-                print("Team details updated successfully:\n",{team})
+                print("Team details updated successfully:")
+                print(f"ID: {team.team_id}, Name: {team.team_name}")
 
             except Exception as exc:
                 session.rollback()
@@ -75,8 +73,8 @@ class Team(Base):
             try:
                 session.delete(team)
                 session.commit()
-                print("Successfully deleted team:\n",{team})
-
+                print("Successfully deleted team:")
+                print(f"ID: {team.team_id}, Name: {team.team_name}")
             except Exception as exc:
                 session.rollback()
                 print(f'Error deleting team: {exc}')

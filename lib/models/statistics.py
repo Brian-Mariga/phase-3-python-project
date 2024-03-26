@@ -1,11 +1,11 @@
-# lib/models/player_statistics.py
+# lib/models/statistics.py
 
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Date, Time
+from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint, Date, Time, func
 from sqlalchemy.orm import sessionmaker, relationship
 from models.__init__ import Base, session
 
 class Statistics(Base):
-    __tablename__ = 'player_statistics'
+    __tablename__ = 'statistics'
 
     stat_id = Column(Integer, primary_key=True)
     player_id = Column(Integer, ForeignKey('players.player_id'), nullable = False)
@@ -48,31 +48,36 @@ class Statistics(Base):
     
     @classmethod
     def get_stat_with_highest(cls, attribute):
-        valid_attributes = ['points_scored', 'rebounds', 'assists, steals', 'blocks']
+        valid_attributes = ['points_scored', 'rebounds', 'assists', 'steals', 'blocks']
 
         if attribute not in valid_attributes:
-            raise ValueError("Invalid attribute. Please provide one of: 'points_scored', 'rebounds', 'assists', 'steals', 'blocks'")
+            print("Invalid attribute. Please provide one of: 'points_scored', 'rebounds', 'assists', 'steals', 'blocks'")
         else:
-            return session.query(cls).order_by(getattr(cls,attribute).desc()).first()
+            highest_value = session.query(func.max(getattr(cls, attribute))).scalar()
+            return session.query(cls).filter(getattr(cls, attribute) == highest_value).all()
 
     @classmethod
     def get_stat_with_lowest(cls, attribute):
-        valid_attributes = ['points_scored', 'rebounds', 'assists, steals', 'blocks']
+        valid_attributes = ['points_scored', 'rebounds', 'assists', 'steals', 'blocks']
 
         if attribute not in valid_attributes:
-            raise ValueError("Invalid attribute. Please provide one of: 'points_scored', 'rebounds', 'assists', 'steals', 'blocks'")
-        return session.query(cls).order_by(getattr(cls,attribute).asc()).first()
+            print("Invalid attribute. Please provide one of: 'points_scored', 'rebounds', 'assists', 'steals', 'blocks'")
+        else:
+            lowest_value = session.query(func.min(getattr(cls, attribute))).scalar()
+            return session.query(cls).filter(getattr(cls, attribute) == lowest_value).all()
+
+
         
     def update_statistic(stat_id):
         if stat := Statistics.get_statistic_by_id(stat_id):
             try:
-                new_player_id = input("Enter the new Player ID: ")
-                new_game_id = input("Enter the new Game ID: ")
-                new_points_scored = input("Enter the new number of Points Scored: ")
-                new_rebounds = input("Enter the new number of rebounds: ")
-                new_assists = input("Enter the new number of assists: ")
-                new_steals = input("Enter the new number of steals: ")
-                new_blocks = input("Enter the new number of blocks: ")
+                new_player_id = input("Enter the new Player ID(leave empty to keep current): ")
+                new_game_id = input("Enter the new Game ID(leave empty to keep current): ")
+                new_points_scored = input("Enter the new number of Points Scored(leave empty to keep current): ")
+                new_rebounds = input("Enter the new number of rebounds(leave empty to keep current): ")
+                new_assists = input("Enter the new number of assists(leave empty to keep current): ")
+                new_steals = input("Enter the new number of steals(leave empty to keep current): ")
+                new_blocks = input("Enter the new number of blocks(leave empty to keep current): ")
 
                 if new_player_id:
                     stat.player_id = new_player_id

@@ -1,9 +1,12 @@
 # lib/cli.py
 
+import logging
 from helpers import *
 from models.__init__ import create_tables
 
 def main():
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
+
     create_tables()
     while True:
         menu()
@@ -27,7 +30,7 @@ def main():
         elif choice == "8":
             add_a_team()
         elif choice == "9":
-            list_of_teams
+            list_of_teams()
         elif choice == "10":
             list_team_by_id()
         elif choice == "11":
@@ -45,11 +48,11 @@ def main():
         elif choice == "17":
             list_games_by_date()
         elif choice == "18":
-            list_games_by_team()
+            list_games_by_team_id()
         elif choice == "19":
-            update_a_team()
+            update_a_game()
         elif choice == "20":
-            delete_a_team()
+            delete_a_game()
         elif choice == "21":
             create_statistic()
         elif choice == "22":
@@ -105,7 +108,7 @@ def menu():
     print("24: Get the stats of a Player")
     print("25: Get the stats of a Game")
     print("26: Get the highest stats by a field")
-    print("27: Get the lowest stats by a field")
+    print("27: Get the least stats by a field")
     print("28: Update a Stat Details")
     print("29: Delete a Stat")
 

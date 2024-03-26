@@ -43,8 +43,9 @@ def add_a_player():
 def list_of_players():
     if players := Player.get_all_players():
         for player in players:
-            team_name = Team.get_team_name_by_id(player.team_id)
-            print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}, Team Name: {team_name}")
+            # team_name = Team.get_team_name_by_id(player.team_id)
+            print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}")
+            print()
     else:
         print("No player found")
 
@@ -52,23 +53,31 @@ def get_player_by_player_id():
     player_id = input("Enter the Player's id: ")
 
     if player := Player.get_player_by_id(player_id):
-        print(player)
+        team_name = Team.get_team_name_by_id(player.team_id)
+        print(f"Details for player of ID {player_id}")
+        print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}, Team Name: {team_name}")
     else:
         print(f"Player of id {player_id} not found")
 
 def get_a_player_by_player_first_name():
     first_name = input("Enter the Player's first name: ")
 
-    if player := Player.get_player_by_first_name(first_name):
-        print(player)
+    if players := Player.get_player_by_first_name(first_name):
+        for player in players:
+            team_name = Team.get_team_name_by_id(player.team_id)
+            print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}, Team Name: {team_name}")
+            print()
     else:
-        print(f"Player of id {first_name} not found")
+        print(f"Player of name {first_name} not found")
 
 def list_of_players_of_a_team():
     team_id = input("Enter Team's id: ")
     if players := Player.get_players_of_a_team(team_id):
+        print(f"Players of the team with ID {team_id}")
         for player in players:
-            print(player)
+            # team_name = Team.get_team_name_by_id(player.team_id)
+            print(f"ID: {player.player_id}, Names: {player.first_name} {player.last_name}, Jersey Number: {player.jersey_number}, Contacts: {player.contact_details}, Team ID: {player.team_id}")
+            print()
     else:
         print(f"Team of id {team_id} not found")
 
@@ -88,24 +97,26 @@ def add_a_team():
 
 def list_of_teams():
     if teams := Team.get_all_teams():
+        print("List of all teams:")
         for team in teams:
-            print(team)
+            print(f"ID: {team.team_id}, Name: {team.team_name}")
+            print()
     else:
         print("No team found")
 
 def list_team_by_id():
     team_id = input("Enter Team ID: ")
-    if player := Team.get_team_by_id(team_id):
-        print(player)
+    if team := Team.get_team_by_id(team_id):
+        print(f"ID: {team.team_id}, Name: {team.team_name}")
     else:
         print(f"Player of id {team_id} not found")
 
 def list_team_by_name():
     team_name = input("Enter Team name: ")
-    if player := Team.get_team_by_name(team_name):
-        print(player)
+    if team := Team.get_team_by_name(team_name):
+        print(f"ID: {team.team_id}, Name: {team.team_name}")
     else:
-        print(f"Player of id {team_name} not found")
+        print(f"Team of name {team_name} not found")
 
 def update_a_team():
     team_id = input('Enter the team id: ')
@@ -127,8 +138,10 @@ def create_a_new_game():
 
 def list_of_games():
     if games := Game.get_all_games():
+        print("List of Games:")
         for game in games:
-            print(game)
+            print(f"Game ID: {game.game_id} Home Team ID: {game.home_team_id} Away Team ID: {game.away_team_id} Date: {game.date} Time: {game.time} Location: {game.location}")
+            print()
     else:
         print("No games found")
 
@@ -136,7 +149,7 @@ def list_game_by_id():
     game_id = input("Enter the game ID: ")
 
     if game := Game.get_game_by_id(game_id):
-        print(game)
+        print(f"Game ID: {game.game_id} Home Team ID: {game.home_team_id} Away Team ID: {game.away_team_id} Date: {game.date} Time: {game.time} Location: {game.location}")
     else:
         print(f"Game of id {game_id} not found")
 
@@ -145,25 +158,27 @@ def list_games_by_date():
 
     if games := Game.get_games_by_date(date):
         for game in games:
-            print(game)
+            print(f"Game ID: {game.game_id} Home Team ID: {game.home_team_id} Away Team ID: {game.away_team_id} Date: {game.date} Time: {game.time} Location: {game.location}")
     else:
         print(f"No game of '{date}' found")
 
-def list_games_by_team():
-    team_name = input("Enter the Team's name: ")
+def list_games_by_team_id():
+    team_id = input("Enter the Team's ID: ")
 
-    if team := Game.get_games_by_team(team_name):
-        print(team)
+    if games := Game.get_games_by_team(team_id):
+        for game in games:
+            print(f"Game ID: {game.game_id} Home Team ID: {game.home_team_id} Away Team ID: {game.away_team_id} Date: {game.date} Time: {game.time} Location: {game.location}")
+            print()
     else:
-        print(f"Team of name '{team_name}' not found")
+        print(f"Team of name '{team_id}' not found")
 
-def update_a_team():
-    team_id = input("Enter the Team's ID: ")
-    Team.update_team(team_id)
+def update_a_game():
+    game_id = input("Enter the Game's ID: ")
+    Game.update_game(game_id)
 
-def delete_a_team():
-    team_id = input("Enter the Team's ID: ")
-    Team.delete_team(team_id)
+def delete_a_game():
+    game_id = input("Enter the Game's ID: ")
+    Game.delete_game(game_id)
 
 
 
@@ -179,43 +194,60 @@ def create_statistic():
 
 def list_all_statistics():
     if stats := Statistics.get_all_statistics():
+        print("List of stats:")
         for stat in stats:
-            print(stat)
+            print(f"ID: {stat.stat_id}, Player ID: {stat.player_id}, Game ID: {stat.game_id}, Points Scored: {stat.points_scored}, Rebounds: {stat.rebounds}, Assists: {stat.assists}, Steals: {stat.steals}, Blocks: {stat.blocks}")
+            print()
     else:
         print("No stats found")
 
 def list_stat_by_id():
     stat_id = input("Enter the stat ID: ")
     if stat := Statistics.get_statistic_by_id(stat_id):
-        print(stat)
+        print(f"ID: {stat.stat_id}, Player ID: {stat.player_id}, Game ID: {stat.game_id}, Points Scored: {stat.points_scored}, Rebounds: {stat.rebounds}, Assists: {stat.assists}, Steals: {stat.steals}, Blocks: {stat.blocks}")
     else:
         print(f"Stat of ID {stat_id} not found")
 
 def list_player_stats():
     player_id = input("Enter the Player's ID: ")
     if stats := Statistics.get_player_statistics(player_id):
+        print(f'Stats of Player of ID {player_id}')
         for stat in stats:
-            print(stat)
+            print(f"ID: {stat.stat_id}, Player ID: {stat.player_id}, Game ID: {stat.game_id}, Points Scored: {stat.points_scored}, Rebounds: {stat.rebounds}, Assists: {stat.assists}, Steals: {stat.steals}, Blocks: {stat.blocks}")
+            print()
     else:
         print(f"Stats of player of ID {player_id} not found")
 
 def list_game_stats():
     game_id = input("Enter the Game ID: ")
     if stats := Statistics.get_game_statistics(game_id):
+        print(f"Stats for game ID {game_id}:")
         for stat in stats:
-            print(stat)
+            player = Player.get_player_by_id(stat.player_id)
+            print(f"ID: {stat.stat_id}, Player ID: {stat.player_id}, Name: {player.first_name} {player.last_name}, Game ID: {stat.game_id}, Points Scored: {stat.points_scored}, Rebounds: {stat.rebounds}, Assists: {stat.assists}, Steals: {stat.steals}, Blocks: {stat.blocks}")
+            print()
     else:
         print(f"Stats of Game ID {game_id} not found")
 
 def list_highest_stat_of_a_field():
     field = input("Enter the field name.Must be either of('points_scored', 'rebounds', 'assists, steals', 'blocks'): ")
+    if stats := Statistics.get_stat_with_highest(field):
+        print(f"Highest {field}:")
+        for stat in stats:
+            print(f"Player ID: {stat.player_id}, Game ID: {stat.game_id}, {field.capitalize()}: {getattr(stat, field)}")
+    else:
+        print("No statistics found.")
 
-    Statistics.get_stat_with_highest(field)
+
 
 def list_lowest_stat_of_a_field():
     field = input("Enter the field name.Must be either of('points_scored', 'rebounds', 'assists, steals', 'blocks'): ")
-
-    Statistics.get_stat_with_lowest(field)
+    if stats := Statistics.get_stat_with_lowest(field):
+        print(f"Least {field}:")
+        for stat in stats:
+            print(f"Player ID: {stat.player_id}, Game ID: {stat.game_id}, {field.capitalize()}: {getattr(stat, field)}")
+    else:
+        print("No statistics found.")
 
 def update_stat():
     stat_id = input("Enter stat ID: ")
